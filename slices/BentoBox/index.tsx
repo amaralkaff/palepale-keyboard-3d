@@ -1,5 +1,3 @@
-"use client";
-
 import { FC } from "react";
 import { asText, Content } from "@prismicio/client";
 import {
@@ -27,7 +25,10 @@ const BentoBox: FC<BentoBoxProps> = ({ slice }) => {
       data-slice-variation={slice.variation}
     >
       <FadeIn>
-        <h2 className="font-bold-slanted mb-8 scroll-pt-6 text-6xl uppercase md:text-8xl">
+        <h2
+          id="features"
+          className="font-bold-slanted mb-8 scroll-pt-6 text-6xl uppercase md:text-8xl"
+        >
           <PrismicText field={slice.primary.heading} />
         </h2>
       </FadeIn>
@@ -65,6 +66,7 @@ function BentoBoxItem({ item }: BentoBoxItemProps) {
       />
 
       <div className="absolute inset-x-0 bottom-0 h-1/3 bg-linear-to-b from-transparent to-black"></div>
+
       <div className="absolute bottom-0 left-0 max-w-xl p-6 text-xl text-balance text-white">
         <PrismicRichText field={item.text} />
       </div>

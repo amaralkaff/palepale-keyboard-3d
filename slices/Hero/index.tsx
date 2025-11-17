@@ -1,6 +1,6 @@
 "use client";
 
-import { FC } from "react";
+import { FC, Suspense, useEffect, useState } from "react";
 import { Content } from "@prismicio/client";
 import { PrismicRichText, SliceComponentProps } from "@prismicio/react";
 import { Bounded } from "@/app/components/Bounded";
@@ -10,8 +10,37 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Loader } from "@/app/components/Loader";
+import { useProgress } from "@react-three/drei";
+import clsx from "clsx";
+import { LuChevronRight } from "react-icons/lu";
 
 gsap.registerPlugin(useGSAP, SplitText, ScrollTrigger);
+
+function LoaderWrapper() {
+  const { active } = useProgress();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (active) {
+      setIsLoading(true);
+    } else {
+      const timer = setTimeout(() => setIsLoading(false), 100);
+      return () => clearTimeout(timer);
+    }
+  }, [active]);
+
+  return (
+    <div
+      className={clsx(
+        "motion-safe:transition-opacity motion-safe:duration-700",
+        isLoading ? "opacity-100" : "pointer-events-none opacity-0",
+      )}
+    >
+      <Loader />
+    </div>
+  );
+}
 
 /**
  * Props for `Hero`.
@@ -76,11 +105,11 @@ const Hero: FC<HeroProps> = ({ slice }) => {
       className="hero relative h-dvh text-white text-shadow-black/30 text-shadow-lg motion-safe:h-[300vh]"
     >
       <div className="hero-scene pointer-events-none sticky top-0 h-dvh w-full">
-        {/* Canvas goes here */}
         <Canvas shadows="soft">
           <Scene />
         </Canvas>
       </div>
+      <LoaderWrapper />
 
       <div className="hero-content absolute inset-x-0 top-1 h-dvh">
         <Bounded
@@ -119,7 +148,9 @@ const Hero: FC<HeroProps> = ({ slice }) => {
 
           <button className="font-bold-slanted group disabled:greyscale flex w-fit cursor-pointer items-center gap-1 rounded bg-[#01A7E1] px-3 py-1 text-2xl uppercase transition">
             {slice.primary.buy_button_text}
-            <span className="transition group-hover:translate-x-1">{">"}</span>
+            <span className="transition group-hover:translate-x-1">
+              <LuChevronRight />
+            </span>
           </button>
         </Bounded>
       </div>

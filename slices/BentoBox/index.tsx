@@ -64,7 +64,7 @@ function BentoBoxItem({ item }: BentoBoxItemProps) {
         width={700}
       />
 
-      <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-b from-transparent to-black"></div>
+      <div className="absolute inset-x-0 bottom-0 h-1/3 bg-linear-to-b from-transparent to-black"></div>
       <div className="absolute bottom-0 left-0 max-w-xl p-6 text-xl text-balance text-white">
         <PrismicRichText field={item.text} />
       </div>

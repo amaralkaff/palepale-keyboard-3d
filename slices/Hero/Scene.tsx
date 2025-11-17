@@ -75,8 +75,11 @@ export function Scene() {
   const [lightIntensityScaler, setLightIntensityScaler] = useState(0);
   const keyboardAnimationRef = useRef<KeyboardRefs>(null);
   const keycapRef = useRef<THREE.Group>(null);
+  const [scallingFactor, setScallingFactor] = useState(1);
 
-  const scallingFactor = window.innerWidth <= 500 ? 0.5 : 1;
+  useEffect(() => {
+    setScallingFactor(window.innerWidth <= 500 ? 0.5 : 1);
+  }, []);
 
   useGSAP(() => {
     if (!keyboardGroupRef.current) return;

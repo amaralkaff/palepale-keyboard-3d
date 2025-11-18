@@ -9,10 +9,10 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 const PRODUCT_DATA = {
   vapor75: {
     name: "Vapor75 Keyboard",
-    price: 25000, // Price in cents ($250.00)
+    price: 9999, // Price in cents ($99.99)
     description:
       "Premium 75% mechanical keyboard with aluminum construction, hot-swappable switches, and RGB backlighting.",
-    image: "/Knurl.jpg",
+    image: "/item_3.png",
   },
 };
 
@@ -38,6 +38,12 @@ export async function POST(
 
     const { name, price, description, image } = product;
 
+    // Convert relative image path to absolute URL for Stripe
+    const origin = request.headers.get("origin") || "http://localhost:3000";
+    const absoluteImageUrl = image?.startsWith("http")
+      ? image
+      : `${origin}${image}`;
+
     const sessionParams: Stripe.Checkout.SessionCreateParams = {
       line_items: [
         {
@@ -46,7 +52,7 @@ export async function POST(
             product_data: {
               name: name,
               ...(description ? { description: description } : {}),
-              ...(image ? { images: [image] } : {}),
+              ...(image ? { images: [absoluteImageUrl] } : {}),
             },
             unit_amount: price,
           },
@@ -54,8 +60,8 @@ export async function POST(
         },
       ],
       mode: "payment",
-      success_url: `${request.headers.get("origin")}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${request.headers.get("origin")}/`,
+      success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/`,
     };
     const session = await stripe.checkout.sessions.create(sessionParams);
 

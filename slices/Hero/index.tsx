@@ -12,7 +12,10 @@ import { Loader } from "@/app/components/Loader";
 import { useProgress } from "@react-three/drei";
 import clsx from "clsx";
 import { LuChevronRight } from "react-icons/lu";
-import { isMobileDevice, getOptimalPixelRatio } from "@/app/utils/deviceDetection";
+import {
+  isMobileDevice,
+  getOptimalPixelRatio,
+} from "@/app/utils/deviceDetection";
 
 gsap.registerPlugin(useGSAP, SplitText, ScrollTrigger);
 
@@ -104,31 +107,8 @@ const Hero: FC = () => {
   return (
     <section className="hero relative h-dvh text-white text-shadow-black/30 text-shadow-lg motion-safe:h-[300vh]">
       <div className="hero-scene pointer-events-none sticky top-0 h-dvh w-full">
-        <Canvas
-          shadows={isMobile ? false : "soft"}
-          dpr={optimalDpr}
-          gl={{
-            powerPreference: isMobile ? "default" : "high-performance",
-            antialias: !isMobile,
-            alpha: false,
-            stencil: false,
-            depth: true,
-            preserveDrawingBuffer: false,
-          }}
-          camera={{ position: [0, 0, 4], fov: 50 }}
-          performance={{ min: 0.5 }}
-          fallback={
-            <div className="flex items-center justify-center h-full text-white">
-              <div className="text-center">
-                <p className="text-lg">WebGL not supported</p>
-                <p className="text-sm opacity-70">Please try a different browser</p>
-              </div>
-            </div>
-          }
-        >
-          <Suspense fallback={null}>
-            <Scene />
-          </Suspense>
+        <Canvas shadows="soft">
+          <Scene />
         </Canvas>
       </div>
       <LoaderWrapper />

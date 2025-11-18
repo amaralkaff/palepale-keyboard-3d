@@ -13,9 +13,11 @@ const robotoFlex = Roboto_Flex({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
-  title: "Amangly Keyboards",
-  description: "Premium mechanical keyboards crafted for enthusiasts",
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
+  ),
+  title: "Palepale Keyboards",
+  description: "Premium Vapor75 keyboards crafted for enthusiasts",
 };
 
 export default function RootLayout({

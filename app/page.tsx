@@ -23,11 +23,10 @@ export default async function Page() {
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: "Amangly Keyboards - Premium Mechanical Keyboards",
-    description:
-      "Crafted for enthusiasts who demand the best typing experience. Premium aluminum construction with hot-swappable switches and RGB backlighting.",
+    title: "Palepale Keyboards - Vapor75",
+    description: "Premium Vapor75 keyboards crafted for enthusiasts",
     openGraph: {
-      images: [{ url: "/Knurl.jpg" }],
+      images: [{ url: "/item_3.jpg" }],
     },
   };
 }

@@ -1,11 +1,20 @@
-import { asText } from "@prismicio/client";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
-import { createClient } from "@/prismicio";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-10-29.clover",
 });
+
+// Product data (previously from Prismic)
+const PRODUCT_DATA = {
+  vapor75: {
+    name: "Vapor75 Keyboard",
+    price: 25000, // Price in cents ($250.00)
+    description:
+      "Premium 75% mechanical keyboard with aluminum construction, hot-swappable switches, and RGB backlighting.",
+    image: "/Knurl.jpg",
+  },
+};
 
 export async function POST(
   request: Request,
@@ -21,12 +30,13 @@ export async function POST(
       );
     }
 
-    const prismicClient = createClient();
-    const product = await prismicClient.getByUID("product", uid);
-    const name = product.data.name as string;
-    const price = product.data.price as number;
-    const image = product.data.image?.url;
-    const description = asText(product.data.description);
+    const product = PRODUCT_DATA[uid as keyof typeof PRODUCT_DATA];
+
+    if (!product) {
+      return NextResponse.json({ error: "Product not found" }, { status: 404 });
+    }
+
+    const { name, price, description, image } = product;
 
     const sessionParams: Stripe.Checkout.SessionCreateParams = {
       line_items: [

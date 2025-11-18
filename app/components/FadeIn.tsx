@@ -40,7 +40,7 @@ export function FadeIn({
         y: 60,
       });
 
-      gsap.to(target, {
+      const scrollTriggerInstance = gsap.to(target, {
         duration: 0.8,
         opacity: 1,
         ease: "power3.out",
@@ -50,8 +50,14 @@ export function FadeIn({
         scrollTrigger: {
           trigger: containerRef.current,
           start: start,
+          invalidateOnRefresh: true, // Recalculate on refresh
         },
       });
+
+      // Cleanup function
+      return () => {
+        scrollTriggerInstance.scrollTrigger?.kill();
+      };
     });
   }, [vars, start, targetChildren]);
 

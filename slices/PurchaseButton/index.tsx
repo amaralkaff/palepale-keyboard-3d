@@ -1,12 +1,6 @@
 "use client";
 
 import { FC, useRef, useState } from "react";
-import { Content } from "@prismicio/client";
-import {
-  PrismicRichText,
-  PrismicText,
-  SliceComponentProps,
-} from "@prismicio/react";
 import { Bounded } from "@/app/components/Bounded";
 import { FadeIn } from "@/app/components/FadeIn";
 import clsx from "clsx";
@@ -18,15 +12,9 @@ import { checkout } from "@/checkout";
 gsap.registerPlugin(useGSAP);
 
 /**
- * Props for `PurchaseButton`.
+ * Component for "PurchaseButton" section.
  */
-export type PurchaseButtonProps =
-  SliceComponentProps<Content.PurchaseButtonSlice>;
-
-/**
- * Component for "PurchaseButton" Slices.
- */
-const PurchaseButton: FC<PurchaseButtonProps> = ({ slice }) => {
+const PurchaseButton: FC = () => {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const textRef = useRef<HTMLSpanElement>(null);
   const [isPressed, setIsPressed] = useState(false);
@@ -84,23 +72,20 @@ const PurchaseButton: FC<PurchaseButtonProps> = ({ slice }) => {
   });
 
   return (
-    <Bounded
-      data-slice-type={slice.slice_type}
-      data-slice-variation={slice.variation}
-    >
+    <Bounded>
       <FadeIn
         className="relative mx-auto max-w-7xl px-4 text-center"
         targetChildren
       >
         <p className="mb-6 text-xl font-medium text-gray-700 md:text-2xl">
-          {slice.primary.eyebrow}
+          Experience Peak Performance
         </p>
 
         <h2
           id="buy-button"
           className="font-bold-slanted mb-8 scroll-pt-6 text-5xl text-gray-900 uppercase md:text-7xl lg:text-8xl"
         >
-          <PrismicText field={slice.primary.heading} />
+          Order Yours Now
         </h2>
 
         <button
@@ -130,7 +115,7 @@ const PurchaseButton: FC<PurchaseButtonProps> = ({ slice }) => {
                   Loading...
                 </span>
               ) : (
-                slice.primary.button_text
+                "Buy Vapor75"
               )}
             </span>
 
@@ -142,8 +127,13 @@ const PurchaseButton: FC<PurchaseButtonProps> = ({ slice }) => {
           </div>
         </button>
 
-        <div className="mt-12 space-y-3 text-base text-gray-600 md:text-lg">
-          <PrismicRichText field={slice.primary.body} />
+        <div className="mt-12 space-y-4 text-base text-gray-600 md:text-lg">
+          <p className="font-semibold">
+            Free worldwide shipping • 30-day guarantee • 2-year warranty
+          </p>
+          <p>
+            Join 10,000+ satisfied customers worldwide
+          </p>
         </div>
       </FadeIn>
     </Bounded>

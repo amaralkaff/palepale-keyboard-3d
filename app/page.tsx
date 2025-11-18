@@ -1,27 +1,33 @@
 import { type Metadata } from "next";
-import { notFound } from "next/navigation";
-import { asImageSrc } from "@prismicio/client";
-import { SliceZone } from "@prismicio/react";
-
-import { createClient } from "@/prismicio";
-import { components } from "@/slices";
+import Hero from "@/slices/Hero";
+import BentoBox from "@/slices/BentoBox";
+import Marquee from "@/slices/Marquee";
+import ColorChanger from "@/slices/ColorChanger";
+import PurchaseButton from "@/slices/PurchaseButton";
+import SwitchPlayground from "@/slices/SwitchPlayground";
 
 export default async function Page() {
-  const client = createClient();
-  const page = await client.getSingle("homepage").catch(() => notFound());
-
-  return <SliceZone slices={page.data.slices} components={components} />;
+  return (
+    <>
+      <Hero />
+      <BentoBox />
+      <Marquee />
+      <SwitchPlayground />
+      <Marquee />
+      <ColorChanger />
+      <Marquee />
+      <PurchaseButton />
+    </>
+  );
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  const client = createClient();
-  const page = await client.getSingle("homepage").catch(() => notFound());
-
   return {
-    title: page.data.meta_title,
-    description: page.data.meta_description,
+    title: "Amangly Keyboards - Premium Mechanical Keyboards",
+    description:
+      "Crafted for enthusiasts who demand the best typing experience. Premium aluminum construction with hot-swappable switches and RGB backlighting.",
     openGraph: {
-      images: [{ url: asImageSrc(page.data.meta_image) ?? "" }],
+      images: [{ url: "/Knurl.jpg" }],
     },
   };
 }

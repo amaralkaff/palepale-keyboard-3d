@@ -1,8 +1,6 @@
 "use client";
 
-import { FC } from "react";
-import { Content, isFilled } from "@prismicio/client";
-import { PrismicRichText, SliceComponentProps } from "@prismicio/react";
+import { FC, useEffect } from "react";
 import { Bounded } from "@/app/components/Bounded";
 import { FadeIn } from "@/app/components/FadeIn";
 import clsx from "clsx";
@@ -10,52 +8,63 @@ import { Canvas } from "@react-three/fiber";
 import { SOUND_MAP, Switch } from "@/app/components/Switch";
 import { Stage } from "@react-three/drei";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { LuVolume2 } from "react-icons/lu";
 
-/**
- * Props for `SwitchPlayground`.
- */
-export type SwitchPlaygroundProps =
-  SliceComponentProps<Content.SwitchPlaygroundSlice>;
+gsap.registerPlugin(ScrollTrigger);
+
+type SwitchData = {
+  uid: "red" | "brown" | "blue" | "black";
+  name: string;
+  color: string;
+};
+
+const SWITCHES: SwitchData[] = [
+  { uid: "blue", name: "Blue Max", color: "#0F80E7" },
+  { uid: "red", name: "Red Max", color: "#C92627" },
+  { uid: "brown", name: "Brown Max", color: "#6E3205" },
+  { uid: "black", name: "Black Max", color: "#000000" },
+];
 
 /**
- * Component for "SwitchPlayground" Slices.
+ * Component for "SwitchPlayground" section.
  */
-const SwitchPlayground: FC<SwitchPlaygroundProps> = ({ slice }) => {
+const SwitchPlayground: FC = () => {
+  useEffect(() => {
+    // Refresh ScrollTrigger after Canvas components render
+    // This ensures correct scroll positions are calculated
+    const timer = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 500); // Wait for Canvas to fully initialize
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <Bounded
-      data-slice-type={slice.slice_type}
-      data-slice-variation={slice.variation}
       className="relative"
       innerClassName="flex flex-col justify-center"
     >
       <FadeIn>
-        <PrismicRichText
-          field={slice.primary.heading}
-          components={{
-            heading2: ({ children }) => (
-              <h2
-                id="switch-playground"
-                className="font-bold-slanted scroll-pt-6 text-6xl uppercase md:text-8xl"
-              >
-                {children}
-              </h2>
-            ),
-          }}
-        />
+        <h2
+          id="switch-playground"
+          className="font-bold-slanted scroll-pt-6 text-6xl uppercase md:text-8xl"
+        >
+          Craft your Click
+        </h2>
 
         <div className="mb-6 max-w-4xl text-xl text-pretty">
-          <PrismicRichText field={slice.primary.description} />
+          <p>
+            The Vapor75 can be customized with one of four premium switch types.
+          </p>
         </div>
         <FadeIn
           targetChildren
           className="grid grid-cols-1 gap-4 overflow-hidden sm:grid-cols-2"
         >
-          {slice.primary.swithces.map((item) =>
-            isFilled.contentRelationship(item.switch) ? (
-              <SharedCanvas key={item.switch.id} color={item.switch} />
-            ) : null,
-          )}
+          {SWITCHES.map((switchData) => (
+            <SharedCanvas key={switchData.uid} switchData={switchData} />
+          ))}
         </FadeIn>
       </FadeIn>
     </Bounded>
@@ -65,16 +74,11 @@ const SwitchPlayground: FC<SwitchPlaygroundProps> = ({ slice }) => {
 export default SwitchPlayground;
 
 type ShareCanvasProps = {
-  color: Content.SwitchPlaygroundSliceDefaultPrimarySwithcesItem["switch"];
+  switchData: SwitchData;
 };
 
-const SharedCanvas = ({ color }: ShareCanvasProps) => {
-  if (!isFilled.contentRelationship(color) || !color.data) {
-    return null;
-  }
-
-  const colorName = color.uid as "red" | "brown" | "blue" | "black";
-  const { color: hexColor, name } = color.data;
+const SharedCanvas = ({ switchData }: ShareCanvasProps) => {
+  const { uid: colorName, color: hexColor, name } = switchData;
 
   const bgColor = {
     blue: "bg-sky-950",
@@ -98,7 +102,7 @@ const SharedCanvas = ({ color }: ShareCanvasProps) => {
       {/* Text button */}
       <button
         onClick={handleSound}
-        className="font-bold-slanted absolute bottom-0 left-0 z-10 flex items-center gap-3 p-6 text-4xl text-white uppercase focus:ring-2 focus:ring-white focus:outline-none"
+        className="font-bold-slanted absolute bottom-0 left-0 z-10 flex items-center gap-3 p-6 text-4xl italic text-white uppercase focus:ring-2 focus:ring-white focus:outline-none"
       >
         {name} <LuVolume2 className="h-8 w-8" />
       </button>
@@ -107,6 +111,12 @@ const SharedCanvas = ({ color }: ShareCanvasProps) => {
         camera={{
           position: [1.5, 2, 0],
           fov: 35,
+        }}
+        onCreated={() => {
+          // Refresh ScrollTrigger when Canvas is ready
+          requestAnimationFrame(() => {
+            ScrollTrigger.refresh();
+          });
         }}
       >
         <Stage

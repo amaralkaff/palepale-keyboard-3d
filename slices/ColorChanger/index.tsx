@@ -1,12 +1,6 @@
 "use client";
 
 import { FC, useCallback, useState } from "react";
-import { Content } from "@prismicio/client";
-import {
-  PrismicRichText,
-  PrismicText,
-  SliceComponentProps,
-} from "@prismicio/react";
 import { Bounded } from "@/app/components/Bounded";
 import clsx from "clsx";
 import Image from "next/image";
@@ -50,14 +44,9 @@ export const KEYCAP_TEXTURES = [
 type KeycapTexture = (typeof KEYCAP_TEXTURES)[number];
 
 /**
- * Props for `ColorChanger`.
+ * Component for "ColorChanger" section.
  */
-export type ColorChangerProps = SliceComponentProps<Content.ColorChangerSlice>;
-
-/**
- * Component for "ColorChanger" Slices.
- */
-const ColorChanger: FC<ColorChangerProps> = ({ slice }) => {
+const ColorChanger: FC = () => {
   const [selectedTextureId, setSelectedTextureId] = useState(
     KEYCAP_TEXTURES[0].id,
   );
@@ -80,8 +69,6 @@ const ColorChanger: FC<ColorChangerProps> = ({ slice }) => {
 
   return (
     <section
-      data-slice-type={slice.slice_type}
-      data-slice-variation={slice.variation}
       className="relative flex h-[90vh] min-h-[1000px] flex-col overflow-hidden bg-linear-to-br from-[#0f172a] to-[#062f4a] text-white"
       id="keycap-changer"
     >
@@ -121,10 +108,12 @@ const ColorChanger: FC<ColorChangerProps> = ({ slice }) => {
       >
         <div className="max-w-md shrink-0">
           <h2 className="font-bold-slanted mb-1 text-4xl uppercase lg:mb-2 lg:text-6xl">
-            <PrismicText field={slice.primary.heading} />
+            Custom Keycaps
           </h2>
           <div className="text-pretty lg:text-lg">
-            <PrismicRichText field={slice.primary.description} />
+            <p>
+              Choose from different keycap materials and see how they transform your keyboard&apos;s appearance in real-time.
+            </p>
           </div>
         </div>
         <ul className="grid grow grid-cols-2 gap-3 rounded-2xl bg-white p-4 text-black shadow-lg sm:grid-cols-3 md:grid-cols-6 lg:grid-cols-3 xl:grid-cols-6">

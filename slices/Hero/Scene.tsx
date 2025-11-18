@@ -7,6 +7,7 @@ import * as THREE from "three";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import gsap from "gsap";
 import { useFrame, useThree } from "@react-three/fiber";
+import { isMobileDevice } from "@/app/utils/deviceDetection";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -75,10 +76,28 @@ export function Scene() {
   const [lightIntensityScaler, setLightIntensityScaler] = useState(0);
   const keyboardAnimationRef = useRef<KeyboardRefs>(null);
   const keycapRef = useRef<THREE.Group>(null);
-  const [scallingFactor, setScallingFactor] = useState(1);
+  const [scalingFactor, setScalingFactor] = useState(1);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    setScallingFactor(window.innerWidth <= 500 ? 0.5 : 1);
+    // Detect mobile device
+    const mobile = isMobileDevice();
+    setIsMobile(mobile);
+
+    // Set scaling factor immediately for mobile
+    const factor = mobile ? 0.6 : 1;
+    setScalingFactor(factor);
+
+    // Handle resize
+    const handleResize = () => {
+      const mobileCheck = isMobileDevice();
+      setScalingFactor(mobileCheck ? 0.6 : 1);
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }
   }, []);
 
   useGSAP(() => {
@@ -373,7 +392,7 @@ export function Scene() {
     <group>
       <CameraController />
       <PerspectiveCamera makeDefault position={[0, 0, 4]} fov={50} />
-      <group scale={scallingFactor}>
+      <group scale={scalingFactor}>
         <group ref={keyboardGroupRef}>
           <Keyboard scale={9} ref={keyboardAnimationRef} />
         </group>
@@ -408,10 +427,10 @@ export function Scene() {
       <spotLight
         position={[-2, 1.5, 3]}
         intensity={30 * lightIntensityScaler}
-        castShadow
+        castShadow={!isMobile}
         shadow-bias={-0.0002}
         shadow-normalBias={0.002}
-        shadow-mapSize={1024}
+        shadow-mapSize={isMobile ? 512 : 1024}
       />
     </group>
   );

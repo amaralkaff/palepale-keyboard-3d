@@ -1,24 +1,25 @@
 import { FC, Fragment } from "react";
-import { Content } from "@prismicio/client";
-import { SliceComponentProps } from "@prismicio/react";
 import { LogoMark } from "@/app/components/LogoMark";
 import clsx from "clsx";
 
-/**
- * Props for `Marquee`.
- */
-export type MarqueeProps = SliceComponentProps<Content.MarqueeSlice>;
+const MARQUEE_PHRASES = [
+  "Joyful Experience",
+  "Quality Materials",
+  "Precision Crafting",
+];
+
+const MARQUEE_DIRECTION = "Left" as "Left" | "Right";
 
 /**
- * Component for "Marquee" Slices.
+ * Component for "Marquee" section.
  */
-const Marquee: FC<MarqueeProps> = ({ slice }) => {
-  const MaqrqueeContent = () => (
+const Marquee: FC = () => {
+  const MarqueeContent = () => (
     <div className="flex items-center bg-gray-200 py-10 whitespace-nowrap">
-      {slice.primary.phrases.map((item, i) => (
+      {MARQUEE_PHRASES.map((phrase, i) => (
         <Fragment key={i}>
           <div className="font-bold-slanted px-14 text-[180px] leading-none text-gray-400/80 uppercase [text-box:trim-both_cap_alphabetic] md:text-[260px]">
-            {item.text}
+            {phrase}
           </div>
           <LogoMark className="size-36 shrink-0" />
         </Fragment>
@@ -27,10 +28,7 @@ const Marquee: FC<MarqueeProps> = ({ slice }) => {
   );
 
   return (
-    <section
-      data-slice-type={slice.slice_type}
-      data-slice-variation={slice.variation}
-    >
+    <section>
       <div
         className="relative flex w-full items-center overflow-hidden select-none"
         aria-hidden="true"
@@ -40,15 +38,14 @@ const Marquee: FC<MarqueeProps> = ({ slice }) => {
           <div
             className={clsx(
               "marquee-track animate-marquee flex",
-              slice.primary.direction === "Right" &&
-                "[animation-direction:reverse]",
+              MARQUEE_DIRECTION === "Right" && "[animation-direction:reverse]",
             )}
           >
-            {/* Content to duplicate */}
-            <MaqrqueeContent />
-            <MaqrqueeContent />
-            <MaqrqueeContent />
-            <MaqrqueeContent />
+            {/* Content duplicated for seamless loop */}
+            <MarqueeContent />
+            <MarqueeContent />
+            <MarqueeContent />
+            <MarqueeContent />
           </div>
         </div>
       </div>
